@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sesión 5 · Lo que no se puede copiar · Diseño de Proyectos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bone:#FBFAF7; --surface:#FFFFFF; --ink:#22282B; --teal:#0F5C5B; --teal-soft:#14807E;
+  --amber:#D6772E; --amber-light:#E8A85C; --mid:#6E7679; --border:#E4E1D9;
+  --display:'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  --body:'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+  --mono:'IBM Plex Mono', 'Courier New', monospace;
+  --pad-x: clamp(24px, 6vw, 110px);
+  --pad-y: clamp(28px, 6vh, 72px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bone);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased}
+body{overflow:hidden}
+
+/* ---------- Deck ---------- */
+.deck{position:relative;height:100%;width:100%}
+.slide{position:absolute;inset:0;padding:var(--pad-y) var(--pad-x) calc(var(--pad-y) + 34px);
+  display:flex;flex-direction:column;justify-content:center;
+  opacity:0;visibility:hidden;transition:opacity .35s ease;overflow-y:auto;background:var(--bone)}
+.slide.active{opacity:1;visibility:visible}
+.inner{width:100%;max-width:1320px;margin:0 auto}
+
+.kicker{font-family:var(--mono);font-size:clamp(14px,1.05vw,18px);font-weight:600;color:var(--amber);letter-spacing:.04em;margin-bottom:18px}
+h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.02em;line-height:1.05}
+h1{font-size:clamp(38px,4.6vw,76px)}
+h2{font-size:clamp(32px,3.5vw,58px);margin-bottom:clamp(20px,3vh,36px)}
+h3{font-size:clamp(22px,1.7vw,30px);letter-spacing:-.01em;line-height:1.15}
+p{font-size:clamp(18px,1.4vw,24px);line-height:1.45}
+.lead{max-width:62ch;color:var(--ink)}
+.muted{color:var(--mid)}
+.src{font-family:var(--mono);font-size:clamp(12px,.85vw,15px);color:var(--mid);margin-top:22px}
+
+/* ---------- Portada ---------- */
+.slide-portada{padding-left:calc(var(--pad-x) + 28px)}
+.slide-portada::before{content:"";position:absolute;left:0;top:0;bottom:0;width:clamp(14px,1.6vw,26px);background:var(--amber)}
+.slide-portada h1{font-size:clamp(52px,7.4vw,124px);max-width:11ch;margin-bottom:22px}
+.slide-portada .sub{font-family:var(--display);font-weight:500;font-size:clamp(22px,2vw,34px);color:var(--teal);margin-bottom:clamp(36px,7vh,80px)}
+.slide-portada .pie{font-family:var(--mono);font-size:clamp(13px,1vw,17px);color:var(--mid);border-top:1px solid var(--border);padding-top:16px;max-width:620px}
+
+/* ---------- Dark ---------- */
+.slide-dark{background:var(--ink);color:var(--bone)}
+.slide-dark .kicker{color:var(--amber-light)}
+.slide-dark .big{font-family:var(--display);font-weight:700;font-size:clamp(40px,5.4vw,92px);line-height:1.04;letter-spacing:-.025em;max-width:16ch}
+.slide-dark .big .line2{display:block;color:var(--amber-light)}
+.slide-dark .q{font-family:var(--mono);font-size:clamp(16px,1.3vw,22px);color:#C9CED0;margin-top:clamp(28px,6vh,64px);border-left:3px solid var(--amber-light);padding-left:18px;max-width:60ch;line-height:1.5}
+
+/* ---------- Header / índice ---------- */
+.slide-header h1{max-width:14ch;margin-bottom:clamp(28px,5vh,56px)}
+.indice{list-style:none;border-top:1px solid var(--border)}
+.indice li{display:grid;grid-template-columns:80px 1fr auto;align-items:baseline;gap:20px;padding:18px 0;border-bottom:1px solid var(--border)}
+.indice .n{font-family:var(--mono);color:var(--amber);font-size:clamp(16px,1.2vw,20px)}
+.indice .t{font-family:var(--display);font-weight:600;font-size:clamp(22px,2vw,34px)}
+.indice .m{font-family:var(--mono);color:var(--mid);font-size:clamp(13px,1vw,16px)}
+
+/* ---------- Concepto / fuentes ---------- */
+.concepto-wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.6vw,26px)}
+.fuente{background:var(--surface);border:1px solid var(--border);border-top:4px solid var(--teal);padding:clamp(20px,2vw,32px)}
+.fuente h3{margin-bottom:12px}
+.fuente p{font-size:clamp(17px,1.25vw,21px)}
+.fuente .impl{margin-top:18px;padding-top:14px;border-top:1px dashed var(--border);color:var(--teal);font-weight:600}
+
+.baumol{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(24px,4vw,70px);align-items:center}
+.baumol .fig{background:var(--surface);border:1px solid var(--border);padding:clamp(24px,2.6vw,40px)}
+.baumol .row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid var(--border)}
+.baumol .row:last-of-type{border-bottom:0}
+.baumol .row span:first-child{font-family:var(--mono);font-size:clamp(14px,1.05vw,17px);color:var(--mid)}
+.baumol .row b{font-family:var(--mono);font-weight:600;font-size:clamp(22px,2vw,34px);color:var(--ink)}
+.baumol .remate{margin-top:26px;font-family:var(--display);font-weight:600;font-size:clamp(22px,1.9vw,32px);color:var(--teal);line-height:1.2}
+
+/* ---------- Caso ---------- */
+.caso-wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(24px,4vw,72px);align-items:start}
+.caso-wrap p + p{margin-top:16px}
+.caso-wrap .nota{margin-top:24px;padding:16px 20px;border-left:4px solid var(--amber);background:var(--surface);font-size:clamp(17px,1.25vw,21px)}
+.datos{background:var(--ink);color:var(--bone);padding:clamp(22px,2.4vw,36px)}
+.datos .etq{font-family:var(--mono);font-size:clamp(12px,.9vw,15px);color:var(--amber-light);margin-bottom:10px}
+.dato-fig{padding:14px 0;border-bottom:1px solid rgba(251,250,247,.14)}
+.dato-fig:last-child{border-bottom:0}
+.dato-fig b{display:block;font-family:var(--mono);font-weight:600;font-size:clamp(26px,2.6vw,44px);line-height:1.05;color:var(--bone)}
+.dato-fig span{display:block;font-size:clamp(15px,1.1vw,18px);color:#C9CED0;margin-top:6px;line-height:1.35}
+
+/* ---------- Modelos ---------- */
+.modelos{display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(24px,3vw,56px);border-top:1px solid var(--border)}
+.modelo{display:grid;grid-template-columns:44px 1fr;gap:14px;padding:clamp(12px,1.8vh,20px) 0;border-bottom:1px solid var(--border)}
+.modelo .n{font-family:var(--mono);color:var(--amber);font-size:clamp(15px,1.1vw,18px);padding-top:4px}
+.modelo h3{font-size:clamp(20px,1.55vw,27px);margin-bottom:6px}
+.modelo p{font-size:clamp(15px,1.1vw,19px);line-height:1.4}
+.modelo .da{color:var(--teal)}
+.modelo .pide{color:var(--mid)}
+.modelo .pide b,.modelo .da b{font-family:var(--mono);font-weight:600;font-size:.85em}
+
+/* ---------- Díptico ---------- */
+.diptico{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,1.8vw,30px)}
+.dcaso{background:var(--surface);border:1px solid var(--border);padding:clamp(20px,2.2vw,34px);display:flex;flex-direction:column}
+.dcaso.a{border-top:5px solid var(--teal)}
+.dcaso.b{border-top:5px solid var(--amber)}
+.dcaso .tipo{font-family:var(--mono);font-size:clamp(13px,.95vw,16px);margin-bottom:8px}
+.dcaso.a .tipo{color:var(--teal)} .dcaso.b .tipo{color:var(--amber)}
+.dcaso h3{margin-bottom:12px}
+.dcaso p{font-size:clamp(16px,1.2vw,20px)}
+.dcaso .cifras{font-family:var(--mono);font-size:clamp(14px,1.05vw,17px);background:var(--bone);border:1px solid var(--border);padding:12px 14px;margin:16px 0;line-height:1.6}
+.dcaso .remate{font-weight:600;margin-top:auto}
+.dcaso.a .remate{color:var(--teal)} .dcaso.b .remate{color:var(--amber)}
+.dip-nota{margin-top:16px;font-size:clamp(15px,1.1vw,18px);color:var(--mid)}
+
+/* ---------- Debate ---------- */
+.lados{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2vw,30px);margin-top:clamp(28px,5vh,52px)}
+.lado{border:1px solid rgba(251,250,247,.22);padding:clamp(18px,2vw,28px)}
+.lado .l{font-family:var(--mono);color:var(--amber-light);font-size:clamp(14px,1vw,17px);margin-bottom:10px}
+.lado p{color:var(--bone)}
+.slide-dark .tiempos{font-family:var(--mono);color:#9EA6A9;font-size:clamp(13px,1vw,16px);margin-top:24px}
+
+/* ---------- Cadena ---------- */
+.cadena{display:flex;align-items:stretch;gap:0;margin-bottom:clamp(24px,4vh,44px)}
+.eslabon{flex:1;background:var(--surface);border:1px solid var(--border);padding:clamp(16px,1.6vw,26px);display:flex;flex-direction:column;justify-content:space-between;min-height:170px}
+.eslabon .who{font-family:var(--display);font-weight:600;font-size:clamp(19px,1.5vw,26px)}
+.eslabon .cuanto{font-family:var(--mono);font-weight:600;font-size:clamp(20px,1.8vw,30px);margin-top:14px}
+.eslabon.artistas{border:2px solid var(--teal)} .eslabon.artistas .cuanto{color:var(--teal)}
+.eslabon.cero .cuanto{color:var(--amber)}
+.flecha{display:flex;align-items:center;justify-content:center;width:clamp(28px,3vw,48px);font-family:var(--mono);font-size:clamp(20px,2vw,32px);color:var(--amber)}
+.cad-bottom{display:grid;grid-template-columns:auto 1fr;gap:clamp(24px,4vw,64px);align-items:center}
+.pct b{display:block;font-family:var(--mono);font-weight:600;font-size:clamp(46px,5.6vw,96px);color:var(--teal);line-height:1}
+.pct span{font-family:var(--mono);color:var(--mid);font-size:clamp(14px,1vw,17px)}
+.regla{font-family:var(--display);font-weight:600;font-size:clamp(22px,2vw,34px);line-height:1.2;border-left:5px solid var(--amber);padding-left:22px}
+
+/* ---------- Taller ---------- */
+.taller-wrap{background:var(--ink);color:var(--bone);padding:clamp(26px,3vw,52px)}
+.taller-wrap .kicker{color:var(--amber-light)}
+.taller-wrap h2{color:var(--bone);margin-bottom:clamp(18px,3vh,30px)}
+.steps{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(24px,3vw,56px);counter-reset:s}
+.steps li{counter-increment:s;display:grid;grid-template-columns:40px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid rgba(251,250,247,.14);font-size:clamp(17px,1.3vw,22px);line-height:1.35}
+.steps li::before{content:counter(s);font-family:var(--mono);font-weight:600;color:var(--amber-light)}
+.taller-pie{margin-top:clamp(18px,3vh,30px);font-family:var(--mono);font-size:clamp(14px,1.05vw,18px);color:#C9CED0;line-height:1.55}
+.taller-pie b{color:var(--amber-light);font-weight:600}
+
+/* ---------- Tarea ---------- */
+.tarea-wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:clamp(20px,3vw,52px);align-items:start}
+.idea{font-family:var(--display);font-weight:600;font-size:clamp(22px,2vw,34px);line-height:1.2;color:var(--teal);margin-bottom:clamp(20px,3vh,34px);max-width:30ch}
+.tarea{background:var(--surface);border:1px solid var(--border);border-top:5px solid var(--amber);padding:clamp(20px,2vw,32px)}
+.tarea h3{margin-bottom:12px}
+.tarea ol{margin:0 0 14px 1.3em}
+.tarea li{font-size:clamp(16px,1.25vw,21px);line-height:1.4;padding:4px 0}
+.tarea .fmt{font-family:var(--mono);font-size:clamp(13px,1vw,16px);color:var(--mid);line-height:1.6}
+.lateral{display:flex;flex-direction:column;gap:clamp(14px,2vh,22px)}
+.parcial{background:var(--ink);color:var(--bone);padding:clamp(18px,2vw,28px)}
+.parcial .etq{font-family:var(--mono);color:var(--amber-light);font-size:clamp(13px,1vw,16px);margin-bottom:8px}
+.parcial p{font-size:clamp(16px,1.2vw,20px)}
+.tarea-bridge{border:1px dashed var(--teal);padding:clamp(18px,2vw,28px)}
+.tarea-bridge .etq{font-family:var(--mono);color:var(--teal);font-size:clamp(13px,1vw,16px);margin-bottom:8px}
+.tarea-bridge p{font-size:clamp(16px,1.2vw,20px)}
+
+/* ---------- Navegación ---------- */
+.nav{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom,0px));right:calc(18px + env(safe-area-inset-right,0px));display:flex;align-items:center;gap:10px;z-index:10}
+.nav button{width:44px;height:44px;border:1px solid var(--border);background:var(--surface);color:var(--ink);font-family:var(--mono);font-size:18px;cursor:pointer}
+.nav button:hover{border-color:var(--teal);color:var(--teal)}
+.nav button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.nav button:disabled{opacity:.35;cursor:default}
+.counter{font-family:var(--mono);font-size:14px;color:var(--mid);min-width:64px;text-align:center}
+body.on-dark .nav button{background:transparent;border-color:rgba(251,250,247,.3);color:var(--bone)}
+body.on-dark .counter{color:#C9CED0}
+.progress{position:fixed;left:0;bottom:0;height:4px;background:var(--teal);z-index:11;transition:width .3s ease}
+
+@media (prefers-reduced-motion: reduce){.slide,.progress{transition:none}}
+
+@media (max-width: 900px){
+  .slide{justify-content:flex-start}
+  .concepto-wrap,.baumol,.caso-wrap,.modelos,.diptico,.lados,.steps,.tarea-wrap,.cad-bottom{grid-template-columns:1fr}
+  .cadena{flex-direction:column}
+  .flecha{width:auto;height:30px;transform:rotate(90deg)}
+  .indice li{grid-template-columns:48px 1fr}
+  .indice .m{grid-column:2}
+  .eslabon{min-height:auto}
+}
+</style>
+</head>
+<body>
+<main class="deck" id="deck">
+
+<!-- 1 · PORTADA -->
+<section class="slide slide-portada active" data-dark="0">
+  <div class="inner">
+    <p class="kicker">Diseño de Proyectos · Sesión 5 · Unidad 3</p>
+    <h1>Lo que no se puede copiar</h1>
+    <p class="sub">Las artes vivas en la economía creativa</p>
+    <p class="pie">Ed Turner · LMPC 7° · Explayarte</p>
+  </div>
+</section>
+
+<!-- 2 · APERTURA -->
+<section class="slide slide-dark" data-dark="1">
+  <div class="inner">
+    <p class="kicker">Para arrancar</p>
+    <p class="big">Una canción se graba una vez. <span class="line2">Un show se paga cada noche.</span></p>
+    <p class="q">Tu último toquín: ¿ganaste, quedaste tablas o pusiste de tu bolsa?</p>
+  </div>
+</section>
+
+<!-- 3 · HEADER + ÍNDICE -->
+<section class="slide slide-header" data-dark="0">
+  <div class="inner">
+    <p class="kicker">Sesión 5</p>
+    <h1>¿Quién paga la función?</h1>
+    <ol class="indice">
+      <li><span class="n">01</span><span class="t">Lo que no se puede copiar</span><span class="m">20 min</span></li>
+      <li><span class="n">02</span><span class="t">¿Quién paga la función?</span><span class="m">30 min</span></li>
+      <li><span class="n">03</span><span class="t">Taller: tu fecha en la mesa</span><span class="m">25 min</span></li>
+      <li><span class="n">04</span><span class="t">Tarea y parcial</span><span class="m">cierre</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- 4 · CONCEPTO: TRES RASGOS -->
+<section class="slide" data-dark="0">
+  <div class="inner">
+    <p class="kicker">01 · Artes vivas</p>
+    <h2>Tres rasgos, tres consecuencias en el bolsillo</h2>
+    <div class="concepto-wrap">
+      <div class="fuente">
+        <h3>Efímero</h3>
+        <p>Pasa y se acaba. La grabación del show ya es otro producto.</p>
+        <p class="impl">No puedes vender la misma función dos veces.</p>
+      </div>
+      <div class="fuente">
+        <h3>Performativo</h3>
+        <p>La obra existe mientras se está haciendo.</p>
+        <p class="impl">Sin función, no hay ingreso. Cada noche se paga completa.</p>
+      </div>
+      <div class="fuente">
+        <h3>Colectivo</h3>
+        <p>Mucha gente, en el mismo tiempo y el mismo lugar.</p>
+        <p class="impl">Tu costo más grande es gente, y la gente no se abarata con tecnología.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · CONCEPTO: BAUMOL -->
+<section class="slide" data-dark="0">
+  <div class="inner">
+    <p class="kicker">01 · La enfermedad de costos</p>
+    <h2>El cuarteto de Beethoven no se volvió más productivo</h2>
+    <div class="baumol">
+      <div>
+        <p class="lead">Un cuarteto de cuerdas necesita hoy los mismos músicos y el mismo tiempo que hace dos siglos. El resto de la economía sí se volvió más productiva, los sueldos suben para todos, y cada año dar una función sale relativamente más caro.</p>
+        <p class="remate">Por eso casi nadie en las artes vivas vive solo de taquilla.</p>
+      </div>
+      <div class="fig">
+        <div class="row"><span>Músicos en 1800</span><b>4</b></div>
+        <div class="row"><span>Músicos hoy</span><b>4</b></div>
+        <div class="row"><span>Duración de la obra</span><b>igual</b></div>
+        <div class="row"><span>Sueldo que necesitan</span><b>↑</b></div>
+        <p class="src">Baumol y Bowen (1966) · retomado en Towse (2019)</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 · CASO CIRQUE -->
+<section class="slide" data-dark="0">
+  <div class="inner">
+    <p class="kicker">01 · Caso</p>
+    <h2>Cirque du Soleil: sin función, no hay negocio</h2>
+    <div class="caso-wrap">
+      <div>
+        <p>Nace de un grupo de artistas callejeros de Baie-Saint-Paul, Quebec, con apoyo del gobierno provincial para los 450 años de la llegada de Jacques Cartier.</p>
+        <p>Crece hasta ser el productor teatral más grande del mundo. En 2020 se cierran los teatros y todo se detiene.</p>
+        <p class="nota">Los creativos que trabajaban por contrato quedaron al final de la fila para cobrar.</p>
+      </div>
+      <div class="datos">
+        <p class="etq">Memo del caso</p>
+        <div class="dato-fig"><b>1984</b><span>Nace con apoyo público de Quebec</span></div>
+        <div class="dato-fig"><b>+5,000</b><span>Despidos en 2020, cerca del 95% de la plantilla</span></div>
+        <div class="dato-fig"><b>US$1,600 M</b><span>Deuda estimada</span></div>
+        <div class="dato-fig"><b>29.06.2020</b><span>Pide protección contra sus acreedores</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 · MODELOS -->
+<section class="slide" data-dark="0">
+  <div class="inner">
+    <p class="kicker">02 · Financiamiento</p>
+    <h2>Seis fuentes, cada una con su letra chica</h2>
+    <div class="modelos">
+      <div class="modelo"><span class="n">1</span><div><h3>Taquilla</h3><p class="da"><b>Te da</b> independencia y la prueba de que te quieren ver.</p><p class="pide"><b>Te pide</b> aceptar que casi nunca alcanza sola; lugar, boletera y promotor cobran primero.</p></div></div>
+      <div class="modelo"><span class="n">2</span><div><h3>Dinero público</h3><p class="da"><b>Te da</b> estabilidad y margen para arriesgar.</p><p class="pide"><b>Te pide</b> requisitos y depender de decisiones de gobierno.</p></div></div>
+      <div class="modelo"><span class="n">3</span><div><h3>Patrocinio y medios</h3><p class="da"><b>Te da</b> dinero y alcance de golpe.</p><p class="pide"><b>Te pide</b> visibilidad, contenido y voz en el formato.</p></div></div>
+      <div class="modelo"><span class="n">4</span><div><h3>Mecenas y fundaciones</h3><p class="da"><b>Te da</b> dinero sin retorno económico.</p><p class="pide"><b>Te pide</b> seguir alineado a su causa.</p></div></div>
+      <div class="modelo"><span class="n">5</span><div><h3>Ingresos derivados</h3><p class="da"><b>Te da</b> que una noche se siga vendiendo: merch, transmisión, grabación.</p><p class="pide"><b>Te pide</b> inversión para producirlos.</p></div></div>
+      <div class="modelo"><span class="n">6</span><div><h3>Comunidad</h3><p class="da"><b>Te da</b> cercanía y libertad.</p><p class="pide"><b>Te pide</b> cuidar a tu gente: si alguien trabaja gratis, alguien paga ese costo.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 · DÍPTICO -->
+<section class="slide" data-dark="0">
+  <div class="inner">
+    <p class="kicker">02 · Dos festivales, dos respuestas</p>
+    <h2>¿Quién decide?</h2>
+    <div class="diptico">
+      <div class="dcaso a">
+        <p class="tipo">Modelo público</p>
+        <h3>Festival Internacional Cervantino</h3>
+        <p>Lo organizan la Secretaría de Cultura federal y el gobierno de Guanajuato. Festival internacional desde 1972.</p>
+        <p class="cifras">Edición 54 · 3 al 18 oct 2026<br>212 funciones · 2,746 artistas · 29 países<br>50 mdp solo para programación artística</p>
+        <p class="remate">Este año Cultura federal eliminó el estado invitado. La institución decide el rumbo.</p>
+      </div>
+      <div class="dcaso b">
+        <p class="tipo">Modelo independiente</p>
+        <h3>Glastonbury</h3>
+        <p>Lo fundó en 1970 Michael Eavis en su granja; hoy lo dirige su hija Emily. Dona la mayor parte de lo que gana.</p>
+        <p class="cifras">Año fiscal a marzo 2024<br>£68.4 M ingresos · £5.9 M utilidad<br>£5.2 M donados</p>
+        <p class="remate">En 2026 no se hace: año de descanso para la tierra. Solo el dueño puede decidir parar.</p>
+      </div>
+    </div>
+    <p class="dip-nota">Y aun así tiene socios: en 2025 Neil Young lo acusó de volverse corporativo por su alianza con la BBC.</p>
+  </div>
+</section>
+
+<!-- 9 · DEBATE -->
+<section class="slide slide-dark" data-dark="1">
+  <div class="inner">
+    <p class="kicker">02 · Debate</p>
+    <p class="big">¿Existe un proyecto en vivo que no le deba nada a nadie?</p>
+    <div class="lados">
+      <div class="lado"><p class="l">Lado A</p><p>La autonomía total es posible para un proyecto independiente.</p></div>
+      <div class="lado"><p class="l">Lado B</p><p>Siempre dependes de alguien. Lo único que eliges es de quién.</p></div>
+    </div>
+    <p class="tiempos">10 min · 2 para preparar · 5 de ida y vuelta · 3 para cerrar</p>
+  </div>
+</section>
+
+<!-- 10 · CASO SOFAR -->
+<section class="slide" data-dark="0">
+  <div class="inner">
+    <p class="kicker">03 · Taller · Caso</p>
+    <h2>Sofar Sounds: lo íntimo a escala</h2>
+    <div class="caso-wrap">
+      <div>
+        <p>Nace en Londres en 2009. Conciertos en casas y espacios prestados, cartel secreto, tres actos con sets cortos y público por invitación.</p>
+        <p>Efímero, performativo y colectivo. Justo lo que vimos hoy, convertido en empresa global.</p>
+        <p class="nota">Desde 2020 contrata staff pagado y prometió mejorar lo que les paga a los artistas.</p>
+      </div>
+      <div class="datos">
+        <p class="etq">Memo del caso</p>
+        <div class="dato-fig"><b>US$25 M</b><span>Ronda de inversión en 2019</span></div>
+        <div class="dato-fig"><b>US$100</b><span>Pago por acto, set de 25 min (2019)</span></div>
+        <div class="dato-fig"><b>US$1,000 a 1,600</b><span>Ingreso por show</span></div>
+        <div class="dato-fig"><b>US$460 mil</b><span>Acuerdo con 654 voluntarios no pagados, Nueva York, 2020</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 · CADENA -->
+<section class="slide" data-dark="0">
+  <div class="inner">
+    <p class="kicker">03 · Taller</p>
+    <h2>¿A dónde va cada peso de un show?</h2>
+    <div class="cadena">
+      <div class="eslabon"><span class="who">Boletos</span><span class="cuanto">US$1,000 a 1,600</span></div>
+      <div class="flecha" aria-hidden="true">→</div>
+      <div class="eslabon artistas"><span class="who">3 actos × US$100</span><span class="cuanto">US$300</span></div>
+      <div class="flecha" aria-hidden="true">→</div>
+      <div class="eslabon cero"><span class="who">Anfitrión</span><span class="cuanto">US$0</span></div>
+      <div class="flecha" aria-hidden="true">→</div>
+      <div class="eslabon"><span class="who">Plataforma se queda</span><span class="cuanto">US$700 a 1,300</span></div>
+    </div>
+    <div class="cad-bottom">
+      <div class="pct"><b>19 a 30%</b><span>del ingreso para los artistas</span></div>
+      <p class="regla">En tu modelo, nadie trabaja gratis sin que lo digas en voz alta.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 12 · TALLER -->
+<section class="slide" data-dark="0">
+  <div class="inner">
+    <div class="taller-wrap">
+      <p class="kicker">03 · Taller · 12 min individual + 8 min de mesa</p>
+      <h2>Tu fecha en números</h2>
+      <ol class="steps">
+        <li>Elige un formato: íntimo, bar o foro, festival, abridor, recital en sala.</li>
+        <li>Aforo, precio y una ocupación realista: 70%, no 100%.</li>
+        <li>Costos de la noche: lugar, audio, músicos, transporte, promoción.</li>
+        <li>Quién cobra antes que tú: lugar, boletera, promotor.</li>
+        <li>Resultado: ¿ganas, quedas tablas o pierdes?</li>
+        <li>Una fuente que no sea taquilla y su letra chica.</li>
+      </ol>
+      <p class="taller-pie"><b>Mesa de financiamiento:</b> un minuto para pedirle dinero al comité. Usa la plantilla del handout.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 13 · TAREA + CIERRE -->
+<section class="slide" data-dark="0">
+  <div class="inner">
+    <p class="kicker">04 · Cierre</p>
+    <p class="idea">Ser autónomo no es no depender de nadie. Es elegir de quién dependes y saber qué cedes.</p>
+    <div class="tarea-wrap">
+      <div class="tarea">
+        <h3>Tarea · La pieza en vivo de tu proyecto</h3>
+        <ol>
+          <li>Tu formato en vivo: qué tiene de efímero, performativo y colectivo.</li>
+          <li>Tu fecha en números.</li>
+          <li>Cómo la pagas: mínimo dos fuentes además de taquilla.</li>
+          <li>Tu postura: qué cederías y qué no.</li>
+        </ol>
+        <p class="fmt">Individual · Word o PDF · 1 a 2 cuartillas · antes de la próxima clase<br>Entra en el esquema de monetización del parcial y en el proyecto integrador.</p>
+      </div>
+      <div class="lateral">
+        <div class="parcial">
+          <p class="etq">Semana 6 · Primer Parcial</p>
+          <p>Examen de Unidades 1 a 3 más la entrega de tu esquema de monetización.</p>
+        </div>
+        <div class="tarea-bridge">
+          <p class="etq">Después del parcial · Unidad 4</p>
+          <p>Hoy vimos quién paga la función. Lo que sigue: quién es dueño de lo que suena en ella.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="nav" aria-label="Navegación de diapositivas">
+  <button id="prev" aria-label="Diapositiva anterior">←</button>
+  <span class="counter" id="counter">01 / 13</span>
+  <button id="next" aria-label="Diapositiva siguiente">→</button>
+</nav>
+<div class="progress" id="progress"></div>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  const counter = document.getElementById('counter');
+  const progress = document.getElementById('progress');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  const pad = n => String(n).padStart(2, '0');
+  let i = 0;
+  const fromHash = parseInt(location.hash.replace('#', ''), 10);
+  if (fromHash >= 1 && fromHash <= total) i = fromHash - 1;
+
+  function show(n){
+    i = Math.max(0, Math.min(total - 1, n));
+    slides.forEach((s, k) => s.classList.toggle('active', k === i));
+    slides[i].scrollTop = 0;
+    counter.textContent = pad(i + 1) + ' / ' + pad(total);
+    progress.style.width = ((i + 1) / total * 100) + '%';
+    prev.disabled = i === 0;
+    next.disabled = i === total - 1;
+    document.body.classList.toggle('on-dark', slides[i].dataset.dark === '1');
+    history.replaceState(null, '', '#' + (i + 1));
+  }
+  prev.addEventListener('click', () => show(i - 1));
+  next.addEventListener('click', () => show(i + 1));
+  document.addEventListener('keydown', e => {
+    if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); show(i + 1); }
+    if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); show(i - 1); }
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(total - 1);
+  });
+  let x0 = null;
+  document.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', e => {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 50) show(i + (dx < 0 ? 1 : -1));
+    x0 = null;
+  });
+  show(i);
+})();
+</script>
+</body>
+</html>
